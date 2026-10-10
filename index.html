@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Microbeneficio Don Marcos · Café de especialidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F6F2;--card:#fff;--ink:#17261D;--muted:#58675E;--green:#1E3B2B;--cherry:#A3202C;--on:#fff;--line:#D5DAD2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101A14;--card:#18261E;--ink:#EEF0EA;--muted:#A3B2A8;--green:#8CC3A2;--cherry:#E5525F;--on:#101A14;--line:#2B3D32}}
+:root[data-theme="dark"]{--bg:#101A14;--card:#18261E;--ink:#EEF0EA;--muted:#A3B2A8;--green:#8CC3A2;--cherry:#E5525F;--on:#101A14;--line:#2B3D32}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Marcellus,Georgia,serif;font-weight:400;margin:0;line-height:1.1}
+:focus-visible{outline:3px solid var(--cherry);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 1.25rem}
+header{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 0}
+.brand{font:400 1.5rem Marcellus,serif;letter-spacing:.18em;text-decoration:none;color:inherit}
+.brand small{display:block;font:500 .6rem "DM Sans",sans-serif;letter-spacing:.35em;color:var(--muted);text-align:center}
+.cartlink{background:var(--green);color:var(--on);border:0;border-radius:999px;padding:.6rem 1.1rem;font:500 1rem "DM Sans",sans-serif;cursor:pointer}
+.hero{padding:3rem 0 4rem;max-width:44rem}
+.hero h1{font-size:clamp(2.6rem,7.5vw,5.2rem);letter-spacing:-.01em}
+.hero p{color:var(--muted);font-size:1.2rem;margin:1.25rem 0 2rem}
+.btn{display:inline-block;background:var(--cherry);color:#fff;border:0;border-radius:999px;padding:.8rem 1.5rem;font:500 1rem "DM Sans",sans-serif;text-decoration:none;cursor:pointer}
+.facts{display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--line)}
+.facts div{color:var(--muted)}.facts b{display:block;color:var(--ink);font:400 1.4rem Marcellus,serif}
+section{padding:3.5rem 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:.5rem}
+.sub{color:var(--muted);margin:0 0 2rem;max-width:38rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
+.prod{background:var(--card);border:1px solid var(--line);border-radius:1rem;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.prod h3{font-size:1.5rem}.prod p{margin:0;color:var(--muted);flex:1}.tag{color:var(--cherry);font-size:.9rem;font-weight:500}
+.opts{display:flex;gap:.5rem}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:.6rem;padding:.55rem .7rem;width:100%}
+.row{display:flex;justify-content:space-between;align-items:center}
+.price{font:400 1.5rem Marcellus,serif}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:3rem}.two p{color:var(--muted);margin:0 0 1rem}
+footer{padding:2rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.95rem}
+/* carrito */
+.drawer{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--card);border-left:1px solid var(--line);padding:calc(1.25rem + env(safe-area-inset-top,0px)) 1.25rem calc(1.25rem + env(safe-area-inset-bottom,0px));transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column;gap:1rem;z-index:10;overflow:auto}
+.drawer.open{transform:none}
+.line{display:grid;grid-template-columns:1fr auto;gap:.25rem 1rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.line small{color:var(--muted)}
+.qty{display:flex;align-items:center;gap:.5rem}
+.qty button{width:2rem;height:2rem;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;font-size:1.1rem}
+.x{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;text-align:left}
+.total{display:flex;justify-content:space-between;font:400 1.4rem Marcellus,serif}
+.empty{color:var(--muted)}
+@media (max-width:760px){.two{grid-template-columns:1fr;gap:1.5rem}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.drawer{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="#">DON MARCOS<small>MICRO BENEFICIO</small></a>
+  <button class="cartlink" id="open">Mi pedido (<span id="count">0</span>)</button>
+</header>
+<main>
+  <div class="hero">
+    <h1>Café de especialidad de nuestra finca, directo a tu casa.</h1>
+    <p>Lo cultivamos, beneficiamos y tostamos en San Antonio de León Cortés. Elige tu café, arma tu pedido y lo confirmamos por WhatsApp.</p>
+    <a class="btn" href="#tienda">Hacer un pedido</a>
+    <div class="facts">
+      <div><b>Cosecha 2026</b>Café recién tostado</div>
+      <div><b>De la finca a la taza</b>Cultivo, secado y tueste propios</div>
+      <div><b>León Cortés</b>Zona de altura</div>
+    </div>
+  </div>
+
+  <section id="tienda">
+    <h2>Nuestros cafés</h2>
+    <p class="sub">Cinco cafés de nuestra finca, cada uno con su proceso. Elige el tamaño y si lo quieres en grano o molido.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section id="especiales">
+    <h2>Cafés especiales y limitados</h2>
+    <p class="sub">Lotes pequeños de variedades poco comunes. Cuando se agotan, hay que esperar a la próxima cosecha.</p>
+    <div class="grid" id="grid2"></div>
+  </section>
+
+  <section class="two" id="nosotros">
+    <h2>Un microbeneficio familiar</h2>
+    <div>
+      <p>Escribe aquí la historia de Don Marcos: cómo empezó la finca, qué variedades siembran y cómo cuidan el secado del café.</p>
+      <p>Producción y comercialización de café de especialidad en San Antonio de León Cortés.</p>
+    </div>
+  </section>
+
+  <section class="two" id="contacto">
+    <h2>Entregas y contacto</h2>
+    <div>
+      <p>Enviamos a todo el país por ₡2 500. Confirmamos tu pedido y la forma de pago por WhatsApp.</p>
+      <p>WhatsApp: 8939 5552<br>Instagram: @donmarcos2022</p>
+    </div>
+  </section>
+</main>
+<footer>© 2026 Microbeneficio Don Marcos</footer>
+</div>
+
+<aside class="drawer" id="drawer" aria-label="Mi pedido">
+  <div class="row"><h3>Mi pedido</h3><button class="x" id="close">Cerrar</button></div>
+  <div id="lines"></div>
+  <div class="row"><span>Envío a todo el país</span><span id="ship">₡0</span></div><div class="total"><span>Total</span><span id="total">₡0</span></div>
+  <input id="name" placeholder="Tu nombre" autocomplete="name">
+  <input id="phone" placeholder="Teléfono" autocomplete="tel" inputmode="tel"><input id="mail" placeholder="Correo (opcional)" autocomplete="email" type="email"><textarea id="addr" rows="2" placeholder="Dirección de entrega: provincia, cantón y señas"></textarea><select id="pay" aria-label="Forma de pago"><option>SINPE Móvil</option><option>Transferencia bancaria</option></select><textarea id="note" rows="2" placeholder="Comentarios (opcional)"></textarea><input id="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+  <button class="btn" id="send">Enviar pedido</button>
+  <p class="empty" id="msg" role="status"></p>
+</aside>
+
+<script>
+var WA="50689395552";var SHIP=2500; // número de WhatsApp con código de país, sin + ni espacios
+var P=[
+ {id:"comercial",n:"Comercial",t:"Para el día a día",d:"Taza limpia y cuerpo balanceado. El café de todos los días.",p:[3000,5500,10000]},
+ {id:"lavado",sc:"89–90",n:"Lavado especialidad",t:"Proceso lavado · Caturra",d:"Taza limpia y brillante, con acidez cítrica y final dulce.",p:[5500,8500,15000]},
+ {id:"natural",sc:"89–90",n:"Natural Catuaí/Caturra",t:"Proceso natural",d:"Secado con la cereza entera. Dulzor a fruta madura y cuerpo redondo.",p:[5500,9000,15000]},
+ {id:"honey",sc:"89–90",n:"Honey/Catuaí",t:"Proceso honey",d:"Dulce y sedoso, con notas a miel y caramelo.",p:[5500,8500,15000]},
+ {id:"tradicional",sc:"89–90",n:"Otros procesos tradicionales",t:"Lotes seleccionados",d:"Procesos de la tradición cafetalera de la zona. Pregúntanos qué hay disponible.",p:[6000,9000,15000]},
+ ];
+var S=[
+ {id:"f1",sc:"89–90",n:"F1 Milenio Natural",t:"Lote limitado",d:"Variedad F1 Milenio en proceso natural. Perfil frutal e intenso.",p:[12000,23000,34000]},
+ {id:"casiopea",sc:"89–90",n:"F1 Casiopea",t:"Lote limitado",d:"Variedad F1 Casiopea. Lote pequeño y taza compleja.",p:[13000,25000,37000]},
+ {id:"sanroque",sc:"89–90",n:"San Roque",t:"Lote limitado",d:"Variedad San Roque. Lote pequeño con carácter propio.",p:[12000,23000,34000]}
+];
+var SZ=["250 g","500 g","1 kg"];
+var cart=[];
+var fmt=function(n){return "₡"+Math.round(n).toLocaleString("es-CR")};
+var g=document.getElementById("grid");
+function mk(x,g){
+  var a=document.createElement("article");a.className="prod";
+  a.innerHTML='<span class="tag">'+x.t+(x.sc?' · Puntaje de cata '+x.sc:'')+'</span><h3>'+x.n+'</h3><p>'+x.d+'</p>'+
+   '<div class="opts"><select aria-label="Tamaño" class="s"><option>250 g</option><option>500 g</option><option>1 kg</option></select>'+
+   '<select aria-label="Molienda" class="m"><option>En grano</option><option>Molido</option></select></div>'+
+   '<div class="row"><span class="price">'+fmt(x.p[0])+'</span><button class="btn">Agregar</button></div>';
+  var pr=a.querySelector(".price"),s=a.querySelector(".s");
+  s.onchange=function(){pr.textContent=fmt(x.p[SZ.indexOf(s.value)])};
+  a.querySelector(".btn").onclick=function(){add(x,s.value,a.querySelector(".m").value);document.getElementById("drawer").classList.add("open")};
+  g.appendChild(a);
+}
+P.forEach(function(x){mk(x,document.getElementById("grid"))});
+S.forEach(function(x){mk(x,document.getElementById("grid2"))});
+function add(x,s,m){
+  var k=x.id+s+m,f=cart.find(function(c){return c.k===k});
+  if(f)f.q++;else cart.push({id:x.id,k:k,n:x.n,s:s,m:m,u:x.p[SZ.indexOf(s)],q:1});
+  draw();
+}
+function draw(){
+  var L=document.getElementById("lines"),t=0,c=0;L.innerHTML="";
+  if(!cart.length)L.innerHTML='<p class="empty">Aún no has agregado cafés.</p>';
+  cart.forEach(function(i,ix){
+    t+=i.u*i.q;c+=i.q;
+    var d=document.createElement("div");d.className="line";
+    d.innerHTML="<div><b>"+i.n+"</b><br><small>"+i.s+" · "+i.m+"</small></div><div>"+fmt(i.u*i.q)+"</div>"+
+     '<div class="qty"><button aria-label="Quitar uno">−</button><span>'+i.q+'</span><button aria-label="Agregar uno">+</button></div><button class="x">Quitar</button>';
+    var b=d.querySelectorAll("button");
+    b[0].onclick=function(){if(--i.q<1)cart.splice(ix,1);draw()};
+    b[1].onclick=function(){i.q++;draw()};
+    b[2].onclick=function(){cart.splice(ix,1);draw()};
+    L.appendChild(d);
+  });
+  document.getElementById("ship").textContent=fmt(cart.length?SHIP:0);document.getElementById("total").textContent=fmt(cart.length?t+SHIP:0);
+  document.getElementById("count").textContent=c;
+}
+document.getElementById("open").onclick=function(){document.getElementById("drawer").classList.add("open")};
+document.getElementById("close").onclick=function(){document.getElementById("drawer").classList.remove("open")};
+document.getElementById("send").onclick=function(){if(API){return sendApi()}
+  if(!cart.length){alert("Agrega al menos un café a tu pedido.");return}
+  var nm=document.getElementById("name").value.trim(),nt=document.getElementById("note").value.trim();
+  var m="Hola, quiero hacer un pedido a Microbeneficio Don Marcos:\n";
+  cart.forEach(function(i){m+="- "+i.q+" x "+i.n+" ("+i.s+", "+i.m+"): "+fmt(i.u*i.q)+"\n"});
+  m+="Envío: "+fmt(SHIP)+"\nTotal: "+document.getElementById("total").textContent;
+  if(nm)m+="\nNombre: "+nm;if(nt)m+="\nNota: "+nt;
+  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(m),"_blank");
+};
+draw();
+var API="";
+function put(l,g){g.innerHTML='';l.forEach(function(x){mk(x,g);if(x.stock!==undefined&&x.stock<=0){var b=g.lastChild.querySelector('.btn');b.textContent='Agotado';b.disabled=true;b.style.opacity=.5}})}
+if(API){fetch(API+'?action=catalog').then(function(r){return r.json()}).then(function(c){P=c.filter(function(x){return!x.special});S=c.filter(function(x){return x.special});put(P,document.getElementById('grid'));put(S,document.getElementById('grid2'))}).catch(function(){})}
+function sendApi(){var $=function(i){return document.getElementById(i)},m=$('msg'),b=$('send');if(!cart.length){m.textContent='Agrega al menos un café a tu pedido.';return}var f={nombre:$('name').value.trim(),tel:$('phone').value.trim(),correo:$('mail').value.trim(),dir:$('addr').value.trim(),pago:$('pay').value,nota:$('note').value.trim(),web:$('web').value};if(!f.nombre||!f.tel||!f.dir){m.textContent='Completa tu nombre, teléfono y dirección de entrega.';return}b.disabled=true;m.textContent='Enviando tu pedido…';fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({cliente:f,items:cart.map(function(i){return{id:i.id,size:i.s,grind:i.m,qty:i.q}})})}).then(function(r){return r.json()}).then(function(r){if(!r.ok)throw new Error(r.error);cart=[];draw();m.textContent='Pedido '+r.order+' recibido. Total '+fmt(r.total)+'. '+r.pagoInfo;b.disabled=false}).catch(function(e){m.textContent=e.message&&e.message!=='Failed to fetch'?e.message:'No pudimos enviar el pedido. Intenta de nuevo o escríbenos por WhatsApp.';b.disabled=false})}
+</script>
+</body>
+</html>
